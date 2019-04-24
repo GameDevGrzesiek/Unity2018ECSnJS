@@ -48,7 +48,7 @@ public class ShootingSystem : ComponentSystem
 
         RocketRenderData = GetLookFromPrototype("RocketPrototype");
         RocketArchetype = m_entityManager.CreateArchetype(typeof(Translation), typeof(Rotation), typeof(ObjectSpeed), 
-                                                          typeof(RocketProximityState), typeof(RocketCollision));
+                                                          typeof(RocketProximityState), typeof(RocketCollision), typeof(RenderMesh));
     }
 
     protected override void OnStartRunning()
@@ -89,12 +89,6 @@ public class ShootingSystem : ComponentSystem
 
             m_shootingTime = 0;
 
-            /*
-                m_shootingTime = 0;
-                for (int i = 0; i < m_rocketDockGroup.Length; ++i)
-                    SpawnRocket(i);
-            */
-
             List<int> entitiesToReuse = new List<int>();
             for (int i = 0; i < m_rocketCollisions.Length; ++i)
             {
@@ -118,13 +112,13 @@ public class ShootingSystem : ComponentSystem
 
     private void SpawnRocket(int i)
     {
-        PostUpdateCommands.CreateEntity(RocketArchetype);
-        PostUpdateCommands.SetComponent(new Translation { Value = new float3(m_rocketDockGroup.RocketDocks[i].Value) });
-        PostUpdateCommands.SetComponent(new Rotation { Value = quaternion.identity });
-        PostUpdateCommands.SetComponent(new ObjectSpeed { Value = GameManager.instance.RocketSpeed });
-        PostUpdateCommands.SetComponent(new RocketProximityState { Value = 0 });
-        PostUpdateCommands.SetComponent(new RocketCollision { Height = 1.5f, Radius = 0.2f });
-        PostUpdateCommands.AddSharedComponent<RenderMesh>(RocketRenderData);
+        Entity rocketEntity = PostUpdateCommands.CreateEntity(RocketArchetype);
+        PostUpdateCommands.SetComponent(rocketEntity, new Translation { Value = new float3(m_rocketDockGroup.RocketDocks[i].Value) });
+        PostUpdateCommands.SetComponent(rocketEntity, new Rotation { Value = quaternion.identity });
+        PostUpdateCommands.SetComponent(rocketEntity, new ObjectSpeed { Value = GameManager.instance.RocketSpeed });
+        PostUpdateCommands.SetComponent(rocketEntity, new RocketProximityState { Value = 0 });
+        PostUpdateCommands.SetComponent(rocketEntity, new RocketCollision { Height = 1.5f, Radius = 0.2f });
+        PostUpdateCommands.SetSharedComponent(rocketEntity, RocketRenderData);
     }
 
     private void ResetRocket(int rocketID, int rocketDockID)

@@ -10,16 +10,32 @@ public class Rocket : MonoBehaviour
 
     private void OnEnable()
     {
+        if (!GameManager.instance.PlayRocketVFX)
+        {
+            var farBurstEmission = FarBurst.emission;
+            farBurstEmission.enabled = false;
+
+            var closeBurstEmission = CloseBurst.emission;
+            closeBurstEmission.enabled = false;
+            return;
+        }
+
         SetBurstType(0);
     }
 
     private void OnDisable()
     {
+        if (!GameManager.instance.PlayRocketVFX)
+            return;
+
         SetBurstType(2);
     }
 
     public void SetBurstType(int type)
     {
+        if (!GameManager.instance.PlayRocketVFX)
+            return;
+
         if (type == 0)
         {
             FarBurst.Play(true);

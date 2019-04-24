@@ -66,9 +66,7 @@ public class VFXSystem : ComponentSystem
     protected override void OnUpdate()
     {
         UpdateSpaceShipVFX();
-
-        if (GameManager.instance.PlayRocketVFX)
-            UpdateRocketVFX();
+        UpdateRocketVFX();
     }
 
     private void UpdateSpaceShipVFX()
@@ -99,9 +97,12 @@ public class VFXSystem : ComponentSystem
             if (!m_rocketVFXMap.ContainsKey(index))
                 m_rocketVFXMap.Add(index, (Rocket)PoolManager.instance.RocketPool.SpawnObject(pos, rot));
 
-            m_rocketVFXMap[index].transform.position = pos;
-            m_rocketVFXMap[index].transform.rotation = rot;
-            m_rocketVFXMap[index].SetBurstType(state);
+            if (m_rocketVFXMap[index])
+            {
+                m_rocketVFXMap[index].transform.position = pos;
+                m_rocketVFXMap[index].transform.rotation = rot;
+                m_rocketVFXMap[index].SetBurstType(state);
+            }
         }
     }
 

@@ -17,6 +17,13 @@ public class RocketExplosion : MonoBehaviour
         if (!particle)
             return;
 
+        if (!GameManager.instance.PlayRocketVFX)
+        {
+            var emission = particle.emission;
+            emission.enabled = false;
+            return;
+        }
+
         particle.Play(true);
     }
 

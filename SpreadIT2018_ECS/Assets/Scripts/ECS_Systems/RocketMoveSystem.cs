@@ -58,9 +58,6 @@ public class RocketMoveSystem : JobComponentSystem
         }
     }
 
-    [BurstCompile]
-    //struct RocketProximityUpdateJob : IJobProcessComponentData<Position, Rotation, >
-
     protected override void OnCreateManager()
     {
         base.OnCreateManager();

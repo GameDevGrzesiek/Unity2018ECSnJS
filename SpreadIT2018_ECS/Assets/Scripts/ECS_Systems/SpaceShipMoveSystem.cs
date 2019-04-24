@@ -11,8 +11,6 @@ using UnityEngine;
 [UpdateAfter(typeof(MoveSystem))]
 public class SpaceShipMoveSystem : JobComponentSystem
 {
-    //public static readonly System.Random RNG = new System.Random();
-
     private float m_offsetChangeTimer = 0.0f;
     public JobHandle m_offsetChangeJH;
     public JobHandle m_spaceShipOffsetMoveJH;

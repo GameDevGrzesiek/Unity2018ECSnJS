@@ -51,6 +51,5 @@ public class RocketExplodeSystem : ComponentSystem
             VFXSystem.PlayVFXExplode(m_rocketStateGroup.Positions[i].Value);
 
         m_vfxSystem.RemoveRocketVFXAtEntity(i);
-        //PostUpdateCommands.DestroyEntity(m_rocketStateGroup.Entities[i]);
     }
 }
