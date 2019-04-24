@@ -23,7 +23,7 @@ public class VFXSystem : ComponentSystem
         public ComponentDataArray<RocketDock> RocketDocks;
 
         [ReadOnly]
-        public ComponentDataArray<Position> Positions;
+        public ComponentDataArray<Translation> Positions;
 
         [ReadOnly]
         public ComponentDataArray<Rotation> Rotations;
@@ -42,7 +42,7 @@ public class VFXSystem : ComponentSystem
         public ComponentDataArray<RocketProximityState> ProximityStates;
 
         [ReadOnly]
-        public ComponentDataArray<Position> Positions;
+        public ComponentDataArray<Translation> Positions;
 
         [ReadOnly]
         public ComponentDataArray<Rotation> Rotations;
@@ -55,9 +55,9 @@ public class VFXSystem : ComponentSystem
 
     private Dictionary<int, Rocket> m_rocketVFXMap;
 
-    protected override void OnCreateManager(int capacity)
+    protected override void OnCreateManager()
     {
-        base.OnCreateManager(capacity);
+        base.OnCreateManager();
 
         m_spaceShipVFXMap = new Dictionary<int, SpaceShip>();
         m_rocketVFXMap = new Dictionary<int, Rocket>();

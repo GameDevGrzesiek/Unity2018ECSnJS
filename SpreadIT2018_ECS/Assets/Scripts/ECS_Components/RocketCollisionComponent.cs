@@ -12,4 +12,4 @@ public struct RocketCollision : IComponentData
     public float Height;
 }
 
-public class RocketCollisionComponent : ComponentDataWrapper<RocketCollision> { }
+public class RocketCollisionComponent : ComponentDataProxy<RocketCollision> { }

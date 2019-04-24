@@ -11,4 +11,4 @@ public struct RocketDock : IComponentData
     public float3 Value;
 }
 
-public class RocketDockComponent : ComponentDataWrapper<RocketDock> { }
+public class RocketDockComponent : ComponentDataProxy<RocketDock> { }

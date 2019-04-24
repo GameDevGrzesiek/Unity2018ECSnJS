@@ -14,6 +14,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : Singleton<GameManager>
 {
+    private const float m_defaultScale = 0.5f;
     public static readonly int SubJobsSplit = 16;
 
     [SerializeField]
@@ -132,9 +133,9 @@ public class GameManager : Singleton<GameManager>
 
     private void SetComponentDataForSpaceShip(int index, float3 placement)
     {
-        EManager.SetComponentData(m_spaceShips[index], new Position { Value = new float3(placement) });
+        EManager.SetComponentData(m_spaceShips[index], new Translation { Value = new float3(placement) });
         EManager.SetComponentData(m_spaceShips[index], new Rotation { Value = Quaternion.AngleAxis(180, Vector3.up) });
-        EManager.SetComponentData(m_spaceShips[index], new Scale { Value = new float3(0.5f, 0.5f, 0.5f) });
+        EManager.SetComponentData(m_spaceShips[index], new NonUniformScale { Value = new float3(0.5f, 0.5f, 0.5f) });
         EManager.SetComponentData(m_spaceShips[index], new ObjectSpeed { Value = GameManager.instance.ObjectSpeed });
         EManager.SetComponentData(m_spaceShips[index], new MoveOffset { Value = new float3(0, 0, 0) });
         EManager.SetComponentData(m_spaceShips[index], new InitialPos { Value = new float3(placement) });

@@ -10,4 +10,4 @@ public struct ObjectSpeed : IComponentData
     public float Value;
 }
 
-public class ObjectSpeedComponent : ComponentDataWrapper<ObjectSpeed> { }
+public class ObjectSpeedComponent : ComponentDataProxy<ObjectSpeed> { }

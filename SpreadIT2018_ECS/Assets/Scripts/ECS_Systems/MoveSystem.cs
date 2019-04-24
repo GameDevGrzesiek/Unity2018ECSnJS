@@ -11,7 +11,7 @@ using UnityEngine;
 public class MoveSystem : JobComponentSystem
 {
     [BurstCompile]
-    struct MoveJob : IJobProcessComponentData<Position, Rotation, ObjectSpeed>
+    struct MoveJob : IJobProcessComponentData<Translation, Rotation, ObjectSpeed>
     {
         [ReadOnly]
         public float3 vec3CometPosition;
@@ -19,7 +19,7 @@ public class MoveSystem : JobComponentSystem
         [ReadOnly]
         public float deltaTime;
 
-        public void Execute(ref Position position, [ReadOnly] ref Rotation rotation, [ReadOnly] ref ObjectSpeed speed)
+        public void Execute(ref Translation position, [ReadOnly] ref Rotation rotation, [ReadOnly] ref ObjectSpeed speed)
         {
             float step = speed.Value * deltaTime;
             position.Value = Vector3.MoveTowards(position.Value, vec3CometPosition, step);
@@ -34,7 +34,7 @@ public class MoveSystem : JobComponentSystem
             deltaTime = Time.deltaTime,
         };
 
-        JobHandle moveHandle = moveJob.Schedule(this, GameManager.SubJobsSplit, inputDeps);
+        JobHandle moveHandle = moveJob.Schedule(this, inputDeps);
 
         return moveHandle;
     }

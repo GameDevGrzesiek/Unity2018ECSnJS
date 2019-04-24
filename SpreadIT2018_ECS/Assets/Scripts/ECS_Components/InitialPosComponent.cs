@@ -11,4 +11,4 @@ public struct InitialPos : IComponentData
     public float3 Value;
 }
 
-public class InitialPosComponent : ComponentDataWrapper<InitialPos> { }
+public class InitialPosComponent : ComponentDataProxy<InitialPos> { }

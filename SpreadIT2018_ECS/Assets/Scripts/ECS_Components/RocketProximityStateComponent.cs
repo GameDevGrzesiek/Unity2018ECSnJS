@@ -11,4 +11,4 @@ public struct RocketProximityState : IComponentData
     public int Value; // 0 - far, 1 - close, 2 - collision
 }
 
-public class RocketProximityStateComponent : ComponentDataWrapper<RocketProximityState> { }
+public class RocketProximityStateComponent : ComponentDataProxy<RocketProximityState> { }

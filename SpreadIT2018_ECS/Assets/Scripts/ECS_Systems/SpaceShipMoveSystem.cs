@@ -36,12 +36,12 @@ public class SpaceShipMoveSystem : JobComponentSystem
     }
 
     [BurstCompile]
-    struct SpaceShipOffsetMoveJob : IJobProcessComponentData<Position, InitialPos, MoveOffset>
+    struct SpaceShipOffsetMoveJob : IJobProcessComponentData<Translation, InitialPos, MoveOffset>
     {
         [ReadOnly]
         public float deltaTime;
 
-        public void Execute(ref Position position, [ReadOnly] ref InitialPos initialPos, [ReadOnly] ref MoveOffset moveOffset)
+        public void Execute(ref Translation position, [ReadOnly] ref InitialPos initialPos, [ReadOnly] ref MoveOffset moveOffset)
         {
             Vector3 curPos = position.Value;
             Vector3 posFlat = new Vector3(position.Value.x, position.Value.y, 0);
@@ -55,9 +55,9 @@ public class SpaceShipMoveSystem : JobComponentSystem
     }
 
     [BurstCompile]
-    struct RocketDockUpdateJob : IJobProcessComponentData<RocketDock, Position, Rotation>
+    struct RocketDockUpdateJob : IJobProcessComponentData<RocketDock, Translation, Rotation>
     {
-        public void Execute([WriteOnly] ref RocketDock rocketDock, [ReadOnly] ref Position position, [ReadOnly] ref Rotation rotation)
+        public void Execute([WriteOnly] ref RocketDock rocketDock, [ReadOnly] ref Translation position, [ReadOnly] ref Rotation rotation)
         {
             Quaternion curOrientation = rotation.Value;
             float3 rocketDockOffset = curOrientation * new Vector3(0, -1.5f, 1);
@@ -66,12 +66,12 @@ public class SpaceShipMoveSystem : JobComponentSystem
     }
 
     [BurstCompile]
-    struct SpaceShipRotateJob : IJobProcessComponentData<Rotation, Position, RocketDock>
+    struct SpaceShipRotateJob : IJobProcessComponentData<Rotation, Translation, RocketDock>
     {
         [ReadOnly]
         public float3 vec3CometPosition;
 
-        public void Execute([WriteOnly] ref Rotation rotation, [ReadOnly] ref Position position, [ReadOnly] ref RocketDock rocketDock)
+        public void Execute([WriteOnly] ref Rotation rotation, [ReadOnly] ref Translation position, [ReadOnly] ref RocketDock rocketDock)
         {
             Vector3 dir = vec3CometPosition - position.Value;
             if (dir != Vector3.zero)
@@ -106,7 +106,7 @@ public class SpaceShipMoveSystem : JobComponentSystem
             deltaTime = Time.deltaTime
         };
 
-        m_spaceShipOffsetMoveJH = offsetMoveJob.Schedule(this, GameManager.SubJobsSplit, JobHandle.CombineDependencies(initialDeps, m_offsetChangeJH));
+        m_spaceShipOffsetMoveJH = offsetMoveJob.Schedule(this, JobHandle.CombineDependencies(initialDeps, m_offsetChangeJH));
 
         if (m_offsetChangeTimer > 5.0f)
         {
@@ -117,7 +117,7 @@ public class SpaceShipMoveSystem : JobComponentSystem
                 randValX = UnityEngine.Random.Range(-2.5f, 2.5f),
                 randValY = UnityEngine.Random.Range(-2.5f, 2.5f)
             };
-            m_offsetChangeJH = offsetChangeJob.Schedule(this, GameManager.SubJobsSplit, m_spaceShipOffsetMoveJH);
+            m_offsetChangeJH = offsetChangeJob.Schedule(this, m_spaceShipOffsetMoveJH);
         }
 
         SpaceShipRotateJob spaceShipRotateJob = new SpaceShipRotateJob
@@ -125,11 +125,11 @@ public class SpaceShipMoveSystem : JobComponentSystem
             vec3CometPosition = GameManager.instance.Comet.position
         };
 
-        JobHandle spaceShipRotateHandle = spaceShipRotateJob.Schedule(this, GameManager.SubJobsSplit, m_spaceShipOffsetMoveJH);
+        JobHandle spaceShipRotateHandle = spaceShipRotateJob.Schedule(this, m_spaceShipOffsetMoveJH);
 
         RocketDockUpdateJob rocketDockUpdate = new RocketDockUpdateJob();
 
-        JobHandle returnDeps = rocketDockUpdate.Schedule(this, GameManager.SubJobsSplit, JobHandle.CombineDependencies(m_spaceShipOffsetMoveJH, m_offsetChangeJH, spaceShipRotateHandle));
+        JobHandle returnDeps = rocketDockUpdate.Schedule(this, JobHandle.CombineDependencies(m_spaceShipOffsetMoveJH, m_offsetChangeJH, spaceShipRotateHandle));
 
         return returnDeps;
     }

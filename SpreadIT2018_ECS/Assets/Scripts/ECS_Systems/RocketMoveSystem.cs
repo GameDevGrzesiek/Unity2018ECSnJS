@@ -27,7 +27,7 @@ public class RocketMoveSystem : JobComponentSystem
         public EntityArray Entities;
 
         [ReadOnly]
-        public ComponentDataArray<Position> Positions;
+        public ComponentDataArray<Translation> Positions;
 
         [ReadOnly]
         public ComponentDataArray<Rotation> Rotations;
@@ -41,12 +41,12 @@ public class RocketMoveSystem : JobComponentSystem
     [Inject] private RocketProximityGroup m_rocketProximityGroup;
 
     [BurstCompile]
-    struct RocketRotateJob : IJobProcessComponentData<Rotation, Position, RocketCollision>
+    struct RocketRotateJob : IJobProcessComponentData<Rotation, Translation, RocketCollision>
     {
         [ReadOnly]
         public float3 vec3CometPosition;
 
-        public void Execute([WriteOnly] ref Rotation rotation, [ReadOnly] ref Position position, [ReadOnly] ref RocketCollision rocketCollision)
+        public void Execute([WriteOnly] ref Rotation rotation, [ReadOnly] ref Translation position, [ReadOnly] ref RocketCollision rocketCollision)
         {
             Vector3 dir = vec3CometPosition - position.Value;
             if (dir != Vector3.zero)
@@ -61,9 +61,9 @@ public class RocketMoveSystem : JobComponentSystem
     [BurstCompile]
     //struct RocketProximityUpdateJob : IJobProcessComponentData<Position, Rotation, >
 
-    protected override void OnCreateManager(int capacity)
+    protected override void OnCreateManager()
     {
-        base.OnCreateManager(capacity);
+        base.OnCreateManager();
 
         m_entityManager = World.Active.GetOrCreateManager<EntityManager>();
         m_raycastCommands = new NativeArray<RaycastCommand>(0, Allocator.Persistent);
@@ -85,7 +85,7 @@ public class RocketMoveSystem : JobComponentSystem
             vec3CometPosition = GameManager.instance.Comet.position,
         };
 
-        JobHandle rotateHandle = rocketRotateJob.Schedule(this, GameManager.SubJobsSplit, inputDeps);
+        JobHandle rotateHandle = rocketRotateJob.Schedule(this, inputDeps);
 
         if (m_raycastJH.IsCompleted)
         {

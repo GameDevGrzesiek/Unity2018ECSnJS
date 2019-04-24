@@ -10,7 +10,7 @@ using UnityEngine;
 [UpdateAfter(typeof(SpaceShipMoveSystem))]
 public class ShootingSystem : ComponentSystem
 {
-    public static MeshInstanceRenderer RocketRenderData;
+    public static RenderMesh RocketRenderData;
     public static EntityArchetype RocketArchetype;
 
     EntityManager m_entityManager;
@@ -40,14 +40,14 @@ public class ShootingSystem : ComponentSystem
 
     [Inject] private RocketCollisionGroup m_rocketCollisions;
 
-    protected override void OnCreateManager(int capacity)
+    protected override void OnCreateManager()
     {
-        base.OnCreateManager(capacity);
+        base.OnCreateManager();
 
         m_entityManager = World.Active.GetOrCreateManager<EntityManager>();
 
         RocketRenderData = GetLookFromPrototype("RocketPrototype");
-        RocketArchetype = m_entityManager.CreateArchetype(typeof(Position), typeof(Rotation), typeof(ObjectSpeed), 
+        RocketArchetype = m_entityManager.CreateArchetype(typeof(Translation), typeof(Rotation), typeof(ObjectSpeed), 
                                                           typeof(RocketProximityState), typeof(RocketCollision));
     }
 
@@ -119,28 +119,28 @@ public class ShootingSystem : ComponentSystem
     private void SpawnRocket(int i)
     {
         PostUpdateCommands.CreateEntity(RocketArchetype);
-        PostUpdateCommands.SetComponent(new Position { Value = new float3(m_rocketDockGroup.RocketDocks[i].Value) });
+        PostUpdateCommands.SetComponent(new Translation { Value = new float3(m_rocketDockGroup.RocketDocks[i].Value) });
         PostUpdateCommands.SetComponent(new Rotation { Value = quaternion.identity });
         PostUpdateCommands.SetComponent(new ObjectSpeed { Value = GameManager.instance.RocketSpeed });
         PostUpdateCommands.SetComponent(new RocketProximityState { Value = 0 });
         PostUpdateCommands.SetComponent(new RocketCollision { Height = 1.5f, Radius = 0.2f });
-        PostUpdateCommands.AddSharedComponent(RocketRenderData);
+        PostUpdateCommands.AddSharedComponent<RenderMesh>(RocketRenderData);
     }
 
     private void ResetRocket(int rocketID, int rocketDockID)
     {
-        m_entityManager.SetComponentData(m_rocketCollisions.Entities[rocketID], new Position { Value = new float3(m_rocketDockGroup.RocketDocks[rocketDockID].Value) });
+        m_entityManager.SetComponentData(m_rocketCollisions.Entities[rocketID], new Translation { Value = new float3(m_rocketDockGroup.RocketDocks[rocketDockID].Value) });
         m_entityManager.SetComponentData(m_rocketCollisions.Entities[rocketID], new Rotation { Value = quaternion.identity });
         m_entityManager.SetComponentData(m_rocketCollisions.Entities[rocketID], new RocketProximityState { Value = 0 });
     }
 
-    private static MeshInstanceRenderer GetLookFromPrototype(string protoName)
+    private static RenderMesh GetLookFromPrototype(string protoName)
     {
         var proto = GameObject.Find(protoName);
         if (!proto)
-            return new MeshInstanceRenderer();
+            return new RenderMesh();
 
-        var result = proto.GetComponent<MeshInstanceRendererComponent>().Value;
+        var result = proto.GetComponent<RenderMeshProxy>().Value;
         Object.Destroy(proto);
         return result;
     }

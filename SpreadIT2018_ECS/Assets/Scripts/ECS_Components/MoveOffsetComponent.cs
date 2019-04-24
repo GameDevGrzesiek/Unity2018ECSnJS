@@ -11,4 +11,4 @@ public struct MoveOffset : IComponentData
     public float3 Value;
 }
 
-public class MoveOffsetComponent : ComponentDataWrapper<MoveOffset> { }
+public class MoveOffsetComponent : ComponentDataProxy<MoveOffset> { }

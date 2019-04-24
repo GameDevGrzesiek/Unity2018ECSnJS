@@ -20,7 +20,7 @@ public class RocketExplodeSystem : ComponentSystem
         public ComponentDataArray<RocketProximityState> ProximityStates;
 
         [ReadOnly]
-        public ComponentDataArray<Position> Positions;
+        public ComponentDataArray<Translation> Positions;
 
         public EntityArray Entities;
         public readonly int Length;
@@ -28,9 +28,9 @@ public class RocketExplodeSystem : ComponentSystem
 
     [Inject] private RocketStateGroup m_rocketStateGroup;
 
-    protected override void OnCreateManager(int capacity)
+    protected override void OnCreateManager()
     {
-        base.OnCreateManager(capacity);
+        base.OnCreateManager();
 
         m_entityManager = World.Active.GetOrCreateManager<EntityManager>();
         m_vfxSystem = World.Active.GetOrCreateManager<VFXSystem>();

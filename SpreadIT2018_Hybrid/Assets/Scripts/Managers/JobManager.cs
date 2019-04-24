@@ -217,7 +217,7 @@ public class JobManager : Singleton<JobManager>
 
         m_raycastJH.Complete();
 
-        NativeArray<int> mHits = new NativeArray<int>(m_naRHits.Length, Allocator.Temp);
+        NativeArray<int> mHits = new NativeArray<int>(m_naRHits.Length, Allocator.TempJob);
         for (int i = 0; i < m_naRHits.Length; ++i)
             mHits[i] = m_naRHits[i].collider != null ? 1 : 0;
 
